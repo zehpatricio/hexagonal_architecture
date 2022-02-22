@@ -5,6 +5,7 @@ from app.common import exception
 from app.domain.repository import location_repository
 from app.domain import model as domain_model
 from app.adapter.sql_alchemy import model as sql_model
+from app.adapter.sql_alchemy import location_mapper
 
 
 class LocationRepositoryImpl(location_repository.LocationRepository):
@@ -36,14 +37,20 @@ class LocationRepositoryImpl(location_repository.LocationRepository):
         else:
             found_locations = self.db.query(sql_model.Location).all()
 
-        locations = [self.to_domain(location) for location in found_locations]
+        locations = [
+            location_mapper.to_domain_model(location)
+            for location in found_locations
+        ]
         return locations
 
     def create(
         self, locations: typing.List[domain_model.Location]
     ) -> typing.List[int]:
 
-        sql_locations = [sql_model.Location(**l.dict()) for l in locations]
+        sql_locations = [
+            location_mapper.to_sql_model(location)
+            for location in locations
+        ]
 
         locations_devices_ids = {d.device_id for d in sql_locations}
         devices = self.db.query(sql_model.Device).all()
@@ -61,15 +68,3 @@ class LocationRepositoryImpl(location_repository.LocationRepository):
         for l in sql_locations:
             self.db.refresh(l)
             yield l.id
-
-    def to_domain(self, location: sql_model.Location) -> domain_model.Location:
-        domain_location = domain_model.Location(
-            id=location.id,
-            device_id=location.device_id,
-            lat=location.lat,
-            long=location.long,
-            date=location.date,
-        )
-
-        return domain_location
-
