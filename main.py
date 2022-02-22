@@ -3,7 +3,7 @@ import fastapi
 from fastapi import responses
 
 
-from app.adapter import location_repository_impl
+from app.adapter.sql_alchemy import location_repository_impl
 from app.common import exception
 from app.domain.use_cases.location import list_location_use_case
 from app.domain.use_cases.location import create_location_use_case
