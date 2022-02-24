@@ -1,5 +1,5 @@
 from app.domain import model as domain_model
-from app.adapter.sql_alchemy import model as sql_model
+from app.adapter.db import model as sql_model
 
 
 def to_domain_model(location: sql_model.Location) -> domain_model.Location:

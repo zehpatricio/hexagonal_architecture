@@ -1,11 +1,11 @@
 import typing
 
-from app.adapter.sql_alchemy import sql_db
 from app.common import exception
 from app.domain.repository import location_repository
 from app.domain import model as domain_model
-from app.adapter.sql_alchemy import model as sql_model
-from app.adapter.sql_alchemy import location_mapper
+from app.adapter.db import sql_db
+from app.adapter.db import model as sql_model
+from app.adapter.db import location_mapper
 
 
 class LocationRepositoryImpl(location_repository.LocationRepository):

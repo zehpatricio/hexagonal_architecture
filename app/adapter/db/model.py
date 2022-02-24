@@ -1,7 +1,7 @@
 from sqlalchemy import Column, ForeignKey, Integer, Float, DateTime
 from sqlalchemy.orm import relationship
 
-from app.adapter.sql_alchemy import sql_db
+from app.adapter.db import sql_db
 
 
 class User(sql_db.Base):

@@ -3,7 +3,7 @@ import fastapi
 from fastapi import responses
 
 
-from app.adapter.sql_alchemy import location_repository_impl
+from app.adapter.db import location_repository_impl
 from app.common import exception
 from app.domain.use_cases.location import list_location_use_case
 from app.domain.use_cases.location import create_location_use_case
@@ -14,6 +14,7 @@ app = fastapi.FastAPI()
 repository = location_repository_impl.LocationRepositoryImpl()
 list_uc = list_location_use_case.ListLocationUseCase(repository)
 create_uc = create_location_use_case.CreateLocationUseCase(repository)
+
 
 @app.get('/locations/')
 def list(user_id=None, device_id=None):
