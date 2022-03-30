@@ -7,9 +7,9 @@ from app.domain import model
 class LocationRepository(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
-    def list(self, device_id=None) -> List[model.Location]:
+    def list(self) -> List[model.Location]:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def create(self, locations: List[model.Location]) -> List[int]:
+    def create(self, location: model.Location) -> int:
         raise NotImplementedError

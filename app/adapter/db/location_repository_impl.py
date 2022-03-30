@@ -1,6 +1,5 @@
 import typing
 
-from app.common import exception
 from app.domain.repository import location_repository
 from app.domain import model as domain_model
 from app.adapter.db import sql_db
@@ -13,39 +12,19 @@ class LocationRepositoryImpl(location_repository.LocationRepository):
     def __init__(self) -> None:
         self.db = sql_db.get_db()
 
-    def list(
-        self, device_id=None
-    ) -> typing.List[domain_model.Location]:
-        if device_id:
+    def list(self) -> typing.List[domain_model.Location]:
+        found_locations = self.db.query(sql_model.Location).all()
+        locations = map(location_mapper.to_domain_model, found_locations)
 
-            found_locations = self.db.query(
-                sql_model.Location
-            ).filter(
-                sql_model.Location.device_id == device_id
-            ).all()
-
-        else:
-            found_locations = self.db.query(sql_model.Location).all()
-
-        locations = [
-            location_mapper.to_domain_model(location)
-            for location in found_locations
-        ]
         return locations
 
     def create(
-        self, locations: typing.List[domain_model.Location]
-    ) -> typing.List[int]:
+        self, location: domain_model.Location
+    ) -> int:
 
-        sql_locations = [
-            location_mapper.to_sql_model(location) for location in locations
-        ]
-
-        for l in sql_locations:
-            self.db.add(l)
-
+        db_location = location_mapper.to_sql_model(location)
+        self.db.add(db_location)
         self.db.commit()
+        self.db.refresh(db_location)
 
-        for l in sql_locations:
-            self.db.refresh(l)
-            yield l.id
+        return db_location.id
